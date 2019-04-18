@@ -1,13 +1,5 @@
 # 顺丰优选项目说明文档
 
-
-项目目录介绍:
-![Alt text](./SF-02.png)
-
-
-#### 代码克隆：
-
-git clone https://github.com/xiexiaoge/SF-preferred
 启动项目：npm run dev
 #### 技术运用
 
