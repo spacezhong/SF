@@ -1,0 +1,274 @@
+.detail {
+  .ico-loadmore {
+    display: block;
+    background: url("./img/product-ico.png") no-repeat;
+    background-size: 6rem;
+    width: .4rem;
+    height: .5rem;
+    background-position: -4.2rem 0.16rem;
+    transform: translateY(-50%);
+  }
+}
+
+.product {
+  position: absolute;
+  top: 7.5%;
+  width: 100%;
+  overflow: scroll;
+  height: 85%;
+  .productInfo {
+    padding: .0rem .3rem;;
+    .price {
+      font-size: .5rem;
+      color: #ff6600;
+      font-weight: bold;
+      text-align: center;
+    }
+    border-top: 1px #eee solid;
+    h1 {
+      width: 85%;
+      font-size: .35rem;
+      color: #080808;
+      text-align: center;
+      margin: .4rem auto;
+      span {
+        display: inline-block;
+        width: 1rem;
+        background-color: #87d50d;
+        margin-right: .2987rem;
+        font-size: .3rem;
+        color: #fff;
+        line-height: .568rem;
+        border-radius: 3px;
+      }
+    }
+    .goods-from {
+      margin-top: 0;
+      width: 100%;
+      padding-top: 0.4rem;
+      padding-bottom: .3rem;
+      li {
+        position: relative;
+        float: left;
+        font-size: 0.3rem;
+        line-height: .408rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        &:nth-child(1) {
+          width: 30%;
+        }
+        &:nth-child(2) {
+          width: 45%;
+        }
+        &:nth-child(3) {
+          width: 25%;
+        }
+        &:nth-child(1):after, &:nth-child(2):after {
+          position: absolute;
+          right: .05rem;
+          top: .06rem;
+          width: .03rem;
+          height: .5rem;
+          background-color: #ccc;
+          margin-top: -0.04rem;
+          color: #ccc;
+          content: "";
+          overflow: hidden;
+        }
+      }
+
+    }
+    .promotion {
+      width: 100%;
+      position: relative;
+      border-top: 1px #eee solid;
+      display: flex;
+      flex: 1;
+      align-items: center;
+      padding-bottom: .4rem;
+      padding-top: .4rem;
+      span {
+        font-weight: bold;
+      }
+      .score {
+        display: flex;
+        flex: 1;
+        padding-left: 0.3rem;
+        text-overflow: ellipsis;
+        padding-right: .05rem;
+        span {
+          display: inline-block;
+          float: left;
+          margin-right: .25rem;
+          padding: .1707rem;
+          font-size: 0.2rem;
+          color: #ff5400;
+          text-align: center;
+          border: 1px #ffcbb2 solid;
+          border-radius: 3px;
+          font-weight: normal;
+          vertical-align: middle;
+          line-height: .07rem;
+        }
+
+      }
+      i {
+        display: block;
+        position: absolute;
+        right: 0;
+        width: .3rem;
+        height: .3rem;
+        background: url("img/product-ico.png") no-repeat .1px 0;
+        background-size: contain;
+      }
+    }
+    .delivery {
+      width: 100%;
+      .address {
+        position: relative;
+        width: 100%;
+        background-color: #fff;
+        padding-bottom: .3rem;
+        span {
+          position: absolute;
+          left: 0;
+          top: 0;
+          font-weight: bold;
+        }
+        p {
+          position: relative;
+          padding-left: .9rem;
+          margin-bottom: .3rem;
+          i {
+            position: absolute;
+            left: 1px;
+            width: 0.5974rem;
+            height: 0.7254rem;
+            background: url("img/product-ico.png") no-repeat -2.1333rem 0;
+            background-size: contain;
+          }
+        };
+
+      }
+      .detailAddress {
+        position: fixed;
+        width: 100%;
+        height: 70%;
+        z-index: 1003;
+        display: none;
+      }
+      .goods-num {
+        position: relative;
+        span {
+          position: absolute;
+          left: 0;
+          font-weight: bold;
+        }
+        .goods-nums {
+          width: 2.5rem;
+          height: .6rem;
+          line-height: .6rem;
+          border: 1px #b2b2b2 solid;
+          border-radius: 3px;
+          box-sizing: border-box;
+          margin-left: .9rem;
+          position: relative;
+          top: -.1rem;
+
+          .add, .sub {
+            position: absolute;
+            display: block;
+            width: .5rem;
+            height: 100%;
+            top: 0;
+            text-align: center;
+            background: url("./img/product-ico.png") no-repeat;
+            background-size: 6rem;
+          }
+          .sub {
+            left: 0;
+            background-position: -3.77rem -0.65rem;
+            border-right: 1px #b2b2b2 solid;
+          }
+          input {
+            float: left;
+            display: block;
+            height: 100%;
+            line-height: 100%;
+            width: 1.5rem;
+            font-size: 0.3rem;
+            color: #000;
+            text-align: center;
+            font-weight: bold;
+            border: none;
+            margin-left: .5rem;
+          }
+          .add {
+            right: 0;
+            background-position: -4.95rem -0.65rem;
+            border-left: 1px #b2b2b2 solid;
+          }
+          .add.fade {
+            opacity: 0.4;
+          }
+          .sub.fade {
+            opacity: 0.4;
+          }
+
+        }
+      }
+    }
+    .userComments {
+      width: 100%;
+      .bar {
+        height: .5rem;
+        line-height: .408rem;
+        padding-bottom: .5rem;
+        h1 {
+          width: 100%;
+          font-size: .5rem;
+          span {
+            float: left;
+            width: auto;
+            line-height: 100%;
+            color: #000;
+            background-color: transparent;
+          }
+        }
+        i {
+          float: right;
+        }
+      }
+      ul {
+        margin-top: .2rem;
+        margin-bottom: .2rem;
+        li {
+          width: 100%;
+          p {
+            font-size: .3rem;
+          }
+          h1 {
+            width: 100%;
+            height: .3rem;
+            position: relative;
+            em {
+              display: block;
+              position: absolute;
+              left: 0;
+              background-color: transparent;
+            }
+            i {
+              display: block;
+              position: absolute;
+              right: 0;
+              font-size: .3rem;
+              height: auto;
+              width: auto;
+            }
+          }
+        }
+      }
+    }
+  }
+}

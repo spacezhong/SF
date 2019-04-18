@@ -1,0 +1,69 @@
+{
+  "name": "sf-preferred",
+  "version": "1.0.0",
+  "description": "npm install body-parser connect-mongo ejs express express-session mongoose -S\r ##生产依赖\r npm install es6-promise history react react-dom react-redux react-router-dom react-router-redux react-swipe react-transition-group redux redux-thunk swipe-js-iso whatwg-fetch -S\r ##开发依赖\r npm install babel-core babel-loader babel-preset-es2015 babel-preset-react babel-preset-stage-0 file-loader html-webpack-plugin less less-loader style-loader webpack webpack-dev-server html-webpack-plugin -D",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "babel-preset-env": "^1.6.1",
+    "body-parser": "^1.18.2",
+    "bootstrap": "^3.3.7",
+    "connect-mongo": "^2.0.1",
+    "crypto": "^1.0.1",
+    "ejs": "^2.5.9",
+    "es6-promise": "^4.2.4",
+    "express": "^4.16.3",
+    "express-session": "^1.15.6",
+    "history": "^4.7.2",
+    "iscroll": "^5.2.0",
+    "jquery": "^3.2.1",
+    "mongoose": "^4.13.12",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "react-iscroll": "^2.0.3",
+    "react-lazyload": "^2.3.0",
+    "react-redux": "^5.0.7",
+    "react-router-dom": "^4.2.2",
+    "react-router-redux": "^5.0.0-alpha.9",
+    "react-swipe": "^5.1.1",
+    "react-transition-group": "^2.3.1",
+    "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
+    "redux-promise": "^0.5.3",
+    "redux-thunk": "^2.2.0",
+    "swipe-js-iso": "^2.0.4",
+    "url-loader": "^0.6.2",
+    "uuid": "^3.1.0",
+    "whatwg-fetch": "^2.0.4"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "css-loader": "^0.28.7",
+    "file-loader": "^1.1.5",
+    "html-webpack-plugin": "^2.30.1",
+    "less": "^2.7.3",
+    "less-loader": "^4.0.5",
+    "style-loader": "^0.19.0",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.9.7"
+  },
+  "scripts": {
+    "dev": "webpack-dev-server --open",
+    "build": "webpack -p"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiexiaoge/SF-preferred.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "git+https://github.com/xiexiaoge/SF-preferred"
+  },
+  "homepage": "git+https://github.com/xiexiaoge/SF-preferred#readme"
+}

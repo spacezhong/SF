@@ -1,0 +1,87 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>API接口测试 www.api51.cn</title>
+</head>
+<body>
+<br/>
+<h1>必填参数</h1>
+<br/>
+Token：<input type='text' id='token' value='' />用户令牌	在www.api51.cn注册后可获得<br>
+手机号：<input type='text' id='mobile' value='' />手机号   |  如：180XXXXXXXX<br>
+国家：<input type='text' id='country_code' value='86' />国家代码  |参考国家代码表：http://help.api51.cn/432250<br>
+<br/>
+<h1>方式一、无参数单发接口</h1>
+<br/>
+
+短信内容：<input type='text' id='msg' value='【API无忧】您的验证码为1234' style='min-width:400px' /><button onclick='sendmsg()'>发送</button>
+<br/>确保已经申请通过，已申请成功的签名+模板内容。必须和模板分毫不差，标点符号多一个少一个都不行。如您的签名为：API无忧，申请成功的模板为：您的验证码为{1}。那么此处的内容应为：【API无忧】您的验证码为1234 <br>
+<button onclick='sendSMS()'>发送</button>
+<br/><br/><br/><br/>
+API接口测试 www.api51.cn
+<script src="https://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script>
+    //无参数单发接口
+    function sendmsg(){
+        var mobile = $('#mobile').val();
+
+        var token = $('#token').val();
+        var msg = $('#msg').val();
+        var country_code = $('#country_code').val();
+        $.ajax({
+            type:'POST',
+            url:'http://www.api51.cn/api/smsApi/sendmsg',
+            data:{
+                'mobile':mobile,
+                'msg':msg,
+                'country_code':country_code,
+                'token':token
+
+            },
+            dataType: "json",
+            success: function(data){
+                console.log(data);
+                if(data.result===0){
+                    alert('发送成功');
+                }else{
+                    alert(data.errmsg);
+                }
+
+            }
+        })
+    }
+    //指定模板ID发送接口
+    function sendSMS(){
+        var mobile = $('#mobile').val();
+        var token = $('#token').val();
+        var sign = $('#sign').val();
+        var tpl_id = $('#tpl_id').val();
+        var params = $('#params').val();
+        var country_code = $('#country_code').val();
+        $.ajax({
+            type:'POST',
+            url:'http://www.api51.cn/api/smsApi/sendcode',
+            data:{
+                'mobile':mobile,
+                'tpl_id':tpl_id,
+                'country_code':country_code,
+                'params':params,
+                'sign':sign,
+                'token':token
+
+            },
+            dataType: "json",
+            success: function(data){
+                console.log(data)
+                if(data.result==0){
+                    alert('发送成功');
+                }else{
+                    alert(data.errmsg);
+                }
+
+            }
+        })
+    }
+</script>
+</body>
+</html>
