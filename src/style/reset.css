@@ -142,7 +142,6 @@ button,
 input,
 select,
 textarea {
-    font-size: 100%;
     outline: 0;
 }
 
@@ -223,4 +222,5 @@ button:-moz-focusring,
     content: "";
     clear: both;
 }
+
 

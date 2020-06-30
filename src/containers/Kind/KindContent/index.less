@@ -1,0 +1,55 @@
+
+  .kindContent{//最外层父元素必须要绝对定位，为了能脱离文档流，实现两边滚动，如果不脱离文档流，就不能实现两边滚动
+    position:absolute;
+    top:1.08rem;
+    left:0;
+    right:0;
+    bottom:0;
+    display: flex;
+    overflow: hidden;//并且要溢出隐藏，溢出隐藏是为了滚动效果更顺滑
+    .kindContent-left{
+      background-color: #f0f0f5;
+      width: 23%;
+      height: 100%;//给第二个父元素加height: 100%，是为了滚动更顺滑
+      overflow: auto;//给第二个父元素加overflow: auto，一定要加上，加上才会滑动
+      .kindContent-left-inner{
+        padding-bottom: 3rem;//给第三个父元素加padding-bottom: 3rem，距离底部有一定的高度，将最后的内容露出来
+      }
+      .kindContent-left-item{
+        height: 1.2rem;
+        line-height: 1.2rem;
+        text-align: center;
+        font-size: .28rem;
+        &.active{
+          background-color: white;
+          border-left:.03rem solid red;
+        }
+      }
+    }
+    .kindContent-right{
+      flex:1;
+      .right-title{
+        font-size: .25rem;
+        margin-top: .5rem ;
+        margin-left: .03rem;
+      }
+      .right-list-inner{
+        margin-left: -.1rem;
+        width: 100%;
+      }
+      .right-list-item{
+        width: 20%;
+        height: 1.2rem;
+        line-height: 1.2rem;
+        border-radius: 50%;
+        background-color: red;
+        float: left;
+        font-size: .25rem;
+        margin-left: .5rem;
+        margin-top: .8rem;
+        text-align: center;
+        color: white;
+      }
+    }
+  }
+

@@ -1,0 +1,13 @@
+module.exports=[
+    {tag:'001',"kindName":'生鲜粮油',"right":[{"title":'肉类海鲜'},{"title":'新鲜果蔬'},{"title":'粮油干货'},{"title":'酒水饮料'},{"title":'休闲糖巧'},{"title":'速食冷藏'},{"title":'冲调茶饮'},{"title":'优选国际'}]},
+    {tag:'002',"kindName":'鲜花摆件',"right":[{"title":'生日花束'},{"title":'节日花束'},{"title":'鲜花'},{"title":'永生花'},{"title":'香皂花'},{"title":'卡通花束'},{"title":'干花'},{"title":'每周一花'}]},
+    {tag:'003',"kindName":'农资园艺',"right":[{"title":'小资盆景'},{"title":'结婚园艺'},{"title":'苗木'},{"title":'种子种球'},{"title":'花卉'},{"title":'绿植盆栽'},{"title":'多肉植物'},{"title":'资材'}]},
+    {tag:'004',"kindName":'特产馆',"right":[{"title":'牛肉特产'},{"title":'青海青稞'},{"title":'宿迁馆'},{"title":'扬州馆'},{"title":'海南馆'},{"title":'徐州馆'},{"title":'福建馆'},{"title":'乌兰察布馆'}]},
+    {tag:'005',"kindName":'图书文娱',"right":[{"title":'历史小说'},{"title":'文艺小说'},{"title":'悬疑小说'},{"title":'世界史'},{"title":'言情'},{"title":'培训书籍'},{"title":'教材'},{"title":'画册'}]},
+    {tag:'006',"kindName":'艺术邮币',"right":[{"title":'艺术鉴赏'},{"title":'邮票收集'},{"title":'艺术水杯'},{"title":'油画'},{"title":'版画'},{"title":'水墨画'},{"title":'雕塑'},{"title":'艺术画册'}]},
+    {tag:'007',"kindName":'工业品',"right":[{"title":'工艺创意'},{"title":'工艺桌椅'},{"title":'手动工具'},{"title":'电动工具'},{"title":'测量工具'},{"title":'过程仪表'},{"title":'电工仪表'},{"title":'分析检测'}]},
+    {tag:'008',"kindName":'医药保健',"right":[{"title":'常用医药'},{"title":'保健品'},{"title":'补气养血'},{"title":'肠胃消化'},{"title":'维矿物质'},{"title":'儿科用药'},{"title":'皮肤用药'},{"title":'口腔用药'}]},
+    {tag:'009',"kindName":'玩具乐器',"right":[{"title":'儿童玩具'},{"title":'乐器品类'},{"title":'变形金刚'},{"title":'芭比娃娃'},{"title":'奥特曼'},{"title":'超级飞侠'},{"title":'小猪佩奇'},{"title":'高达'}]},
+    {tag:'010',"kindName":'创意礼品',"right":[{"title":'结婚礼品'},{"title":'开业礼品'},{"title":'干花'},{"title":'音乐盒'},{"title":'猫猫杯'},{"title":'创意时钟'},{"title":'公仔'},{"title":'保温杯'}]},
+    {tag:'011',"kindName":'文具',"right":[{"title":'铅笔盒'},{"title":'笔记本'},{"title":'橡皮'},{"title":'水彩笔'},{"title":'尺子'},{"title":'书包'},{"title":'钢笔'},{"title":'夹子'}]},
+];

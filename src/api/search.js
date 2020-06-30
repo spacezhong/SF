@@ -1,9 +1,10 @@
-import {get} from "./index"
-//搜索
-export let getSearch=(keyWords,type)=> get(`/public/search?keyWord=${keyWords}&type=${type}`);
-//热门搜索
-export let getHotSearch=()=>get(`/hotSearch`);
-
-//历史记录
-export let getHistorical=(type)=>get(`/historical?type=${type}`);
-
+import axios from './index';
+export const getSearch=(value)=>{
+    return axios.get(`/search?value=${value}`);
+};
+export const getSearchHot=()=>{
+    return axios.get(`/hotSearch`);
+};
+export const getSearchHistory=(type)=>{
+    return axios.get(`/searchHistory?type=${type}`);
+};

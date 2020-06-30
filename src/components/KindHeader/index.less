@@ -1,0 +1,43 @@
+.kindHeader{
+  width: 100%;
+  height: 1rem;
+  background-color:#f0f0f5;
+  position:fixed;
+  left:0;
+  top:0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 0.01rem solid #999999;
+  z-index:999;
+  .kindHeader-arrow{
+    &:before{
+      display: block;
+      content: '<';
+      width: 1rem;
+      height: 1rem;
+      position: absolute;
+      left: 0.15rem;
+      top:0.18rem;
+      font-size: .5rem;
+    }
+  }
+  .kindHeader-search{
+    width: 80%;
+    height: .55rem;
+    background-color: white;
+    text-align: center;
+    line-height:.55rem;
+    border-radius: 2rem;
+    color: #606060;
+    position: relative;
+    font-size: .25rem;
+
+    i{
+      position: absolute;
+      left: .3rem;
+      top: .01rem;
+      color:#69af05;
+    }
+  }
+}

@@ -1,46 +1,27 @@
 let express=require("express");
 let app=express();
-let fs=require("fs");
-let uuid=require("uuid");// 唯一字符串
-let bodyParser=require("body-parser");//读取请求体里面的数据
-let post=8000;//端口号
-let session=require("express-session"); //session
-
-let crpyto=require("crypto");//加密
-
-let retrievData=require("./retrievData/index"); //获取数据执行的函数
-
-let commoditySort=require("./commoditySort/index");//商品排序
-
-let read=(url,cb)=>{
-    fs.readFile(url,"utf-8",(err,data)=>{
-        if(err||data.length===0) return cb([]);
-        cb(JSON.parse(data))
-    });
-}; //读数据方法
-let write=(url,data,cb)=>{
-    fs.writeFile(url,JSON.stringify(data),cb)
-}; //写数据方法
+let post=9000;//端口号
+let fs=require('fs');
+let crypto=require('crypto');//此中间件用于加密
+let bodyParser=require('body-parser');//此中间件用于解析请求体
+let session=require('express-session');
+let homeSwipe=require('./data/home/swipe');
+let homeCategory=require('./data/home/category');
+let homeHeadline=require('./data/home/headline');
+let homeDiscount=require('./data/home/discounts');
+let homeList=require('./data/home/lists');
+let kind=require('./data/kind/kind');
+let searchHot=require('./data/search/searchHot');
+let filterData=require('./data/filter/filter');
 
 app.use(session({
-        resave:true,
-        saveUninitialized:true,
-        secret:"six"
-    }));
-
-// let jsonParser = bodyParser.json();//获取  JSON 编码的请求体
-// let urlencodedParser = bodyParser.urlencoded({ extended: false });//获取 URL编码的请求体
-
-let homeDatas=require("./data/Static/swiper");//轮播数据+导航(10条)
-
-let hotSearch=require("./data/Static/hotSearch");//搜索热门的关键词
-
-let listDatas=require("./data/Static/list"); //获取列表分类数据
-
-app.use(bodyParser.json());
-
+    resave:true,//当客户端并行发送多个请求时，是否允许其中一个请求在另一个请求结束时，对session进行修改覆盖，并保存；
+    saveUninitialized:true,//初始化session时，是否保存到存储；
+    secret:"six",//表示服务器端生成的session签名；
+}));
 //跨域响应头
 app.use((req,res,next)=>{
+    //服务器允许访问的网
     res.header("Access-Control-Allow-Origin","http://localhost:8080");
     //服务器允许客户发送的请求方式
     res.header("Access-Control-Allow-Methods","GET,POST,DELETE,PUT");
@@ -55,304 +36,442 @@ app.use((req,res,next)=>{
         next();
     }
 });
-//所有请求 success成功1 失败0
-//首页
-///home/carousel  轮播数据+导航(10条)+会员+秒杀
-app.get("/home/carousel",(req,res)=>{//轮播图，已获取
-    Object.keys(homeDatas).length>0?res.send({homeDatas,code:0,success:"获取数据成功"}):res.send({code:1,error:"获取数据失败,检查接口"});
+
+//code:0表示成功，code:1表示失败；
+
+//获取home页的数据：
+app.get('/home/swipe',(req,res)=>{
+    homeSwipe.length?
+        res.json({code:0,success:'获取数据成功',homeSwipe})
+        :res.json({code:1,error:'请检查后台接口'})
 });
-//给评论加id
-let getComment=(res,data,next)=>{
-    read("./data/Content/comment.json",comment=>{
-        if(!comment[comment.length-1].commentID){
-            comment.forEach((item,index)=>item.commentID=data[index].recommendID);
-            write("./data/Content/comment.json",comment,()=>{
-                res.comment=comment;
-                next();
-            })
-        }else {
-            res.comment=comment;
-            next();
+app.get('/home/category',(req,res)=>{
+    homeCategory.length?
+    res.json({code:0,success:'获取数据成功',homeCategory})
+    :res.json({code:1,error:'请检查后台接口'})
+});
+app.get('/home/headline',(req,res)=>{
+    homeHeadline.length?
+        res.json({code:0,success:'获取数据成功',homeHeadline})
+        :res.json({code:1,error:'请检查后台接口'})
+});
+app.get('/home/discount',(req,res)=>{
+    homeDiscount.length?
+        res.json({code:0,success:'获取数据成功',homeDiscount})
+        :res.json({code:1,error:'请检查后台接口'})
+});
+app.get('/home/list/:offset/:limit',(req,res)=>{
+    let {offset,limit}=req.params;
+    offset=parseInt(offset);
+    limit=parseInt(limit);
+    if(homeList.length){
+        let listData=homeList.slice(0,offset+limit);
+        let hasMore=offset+limit>homeList.length?false:true;
+        let loadingText=offset+limit>homeList.length?'加载完毕':'加载中';
+        res.json({code:0,success:'获取数据成功',hasMore,loadingText,listData});
+    }else{
+        res.json({code:1,error:'请检查后台接口'})
+    }
+});
+
+//获取kind页数据：
+app.get('/kind',(req,res)=>{
+    kind.length?
+        res.json({code:0,success:'获取数据成功',kind})
+        :res.json({code:1,error:'请检查后台接口'})
+});
+
+//定义读取数据的read方法：
+let read=(url,cb)=>{
+    fs.readFile(url,'utf-8',(err,data)=>{
+        if(err || data.length===0){
+            return cb([])
+        }else{
+            console.log(data);
+            cb(JSON.parse(data));
         }
     });
 };
-//获取列表数据 并且加上id属性
-app.use("/public",(req,res,next)=>{
-    read("./data/Content/mainData.json",data=>{
-        if(!data[data.length-1].recommendID){
-           data.forEach((item,index)=>item.recommendID=uuid.v4());
-            write("./data/Content/mainData.json",data,()=>{
-                getComment(res,data,next);
-                res.data=data;
-           })
-       }else {
-            res.data=data;
-            getComment(res,data,next);
-       }
-    });
+//定义写入数据的write方法：
+let write=(url,data,cb)=>{
+    fs.writeFile(url,JSON.stringify(data),cb)
+};
+//获取search页数据：
+app.get('/search',(req,res)=>{
+     let {value}=req.query;
+     //第一步：先去home页面的主数据中过滤出含有input框输入值的那些项，如果有就返回相关的项：
+     if(value.length>0){
+         let findSearchArray=homeList.filter((item)=>item.recommendTitle.includes(value))||[];
+         console.log(findSearchArray);
+         findSearchArray.length>0
+             ?res.json({code:0,success:'成功获取搜索数据',data:findSearchArray})
+             :res.json({code:1,err:'无相关结果'})
+     }else{
+         res.json({code:1,err:'无相关结果'})
+    }
+     //第二步：再去已有的搜索文件夹中，查找是否有input框输入值的项，如果没有，就把input框的输入值和原来搜索文件夹
+     //的值组合成新的数据，重新写入到原来的搜索文件夹;
+     //注意搜索文件夹最开始是[];
+     value&&read('./data/search/search.json',(data)=>{//cb函数要直接写在这里，为了拿到函数里的value值；
+         console.log(data);// data=[]:初始值为[]
+         let flag=data.some((item)=>item===value);//flag为true/false,是去找数组里有没有等value值相等的值，一旦找到，就停止查找
+         if(!flag){
+             data=[...data,value];//data=['牛奶']；
+             console.log(data);//
+             write('./data/search/search.json',data,()=>{//将新的数据写入到原来的搜索记录中
+                 console.log('写入搜索历史记录成功');
+             })
+         }
+     });
+ });
+app.get('/hotSearch',(req,res)=>{
+    searchHot.length?
+            res.json({code:0,success:'获取数据成功',searchHot})
+            :res.json({code:1,err:'获取数据失败'})
 });
-
-///home/recommend  推荐  分类页  内容 recommend , 判断条件 flag 请求参数offset
-app.get("/public/recommend",(req,res)=>{//为你推荐，已获取
-    retrievData(req,res,res.data);//每次获取4条数据
-});
-
-// list 列表页面
-app.get("/list",(req,res)=>{
-    listDatas.length>0?res.send({code:0,success:"成功获取列表页数据",listDatas}): res.send({code:1,error:"获取数据失败"})
-});
-
-//点击了classification，跳到某种类商品的列表页，获取数据，用keyWord获取指定种类的商品，type未传参，仅仅是获取数据；点击进行排序时，用keyWord重新获取指定种类的商品，用type进行排序，type来自<Filter>组件的data-type
-app.get("/public/classification",(req,res)=>{
-    let keyWord=req.query.keyWord||"";
-    let type=req.query.type;
-    console.log(keyWord, type);
-
-    if(keyWord.length>0){
-        let classifications=res.data.filter(item=>item.classification===keyWord);
-        type?classifications=commoditySort(classifications,type):null;//传了type，就是排序，根据type类型进行排序，未传type,就是获取某一类的数据
-        res.send({code:0,classifications,success:"成功获取分类页数据",type});
-    }else {
-        res.send({code:1,err:"访问错误请检查路径参数"});
+app.get('/searchHistory',(req,res)=>{
+     let type=req.query.type;
+     let cb=(data)=>{
+         if(type==='undefined'){
+             res.json({code:0,success:'成功获取到历史记录',data})
+         }else{
+             write('./data/search/search.json',[],()=>{
+                 res.json({code:0,success:'清除历史记录成功'})
+             })
+         }
+     };
+     read('./data/search/search.json',cb);
+ });
+//获取lists页的数据：
+app.get('/classification/:title',(req,res)=>{
+    let {title}=req.params;
+    if(title){
+        let list=homeList.filter((item)=>(item.classification===title));//先按照title去过滤出符合的项，返回值为数组
+        res.json({code:0,success:'获取数据成功',list})
+    }else{
+        res.json({code:1,err:'请检查接口'})
     }
 });
-
-// 商品详情页 details   该商品details 类似similar  评论comment
-app.get("/public/details",(req,res)=>{
-      let id=req.query.id;
-      let details=res.data.find(item=>item.recommendID===id);
-          if(details){
-              let similar=res.data.filter
-              (item=>item.classification===details.classification).slice(0,4);
-              let comment=res.comment.find(item=>item.commentID===id);
-              res.send({code:0,details,similar,comment,success:"成功获取数据"})
-          }else {
-              res.send({code:1,err:"输入的参数有误"})
-          }
+//获取filterData的数据：
+app.get('/filterData',(req,res)=>{
+    Object.keys(filterData).length>0?
+    res.json({code:0,success:'获取数据成功',filterData})
+    :res.json({code:1,err:'获取数据失败'})
+});
+//获取detail页的数据：
+app.get('/detail/:id',(req,res)=>{
+    let {id}=req.params;
+    let detailList=homeList.filter((item)=>(item.recommendID===id));
+    detailList.length?res.json({code:0,success:'获取数据成功',detailList})
+        :res.json({code:1,err:'获取数据失败'})
 });
 
-//搜索 search    传参 关键字 keyWords 排序
-app.get("/public/search",(req,res)=>{
-    let keyWord=req.query.keyWord||"";
-    let type=req.query.type;
-    keyWord&&read("./data/Content/historical.json",historical=>{
-        let flag =historical.some(item=>item===keyWord);
-        if(!flag){
-            historical=[...historical,keyWord];
-            write("./data/Content/historical.json",historical,()=>{
-                console.log("写入成功");
-            })
-        }
-    });
-    if(keyWord.length>0){
-           let searchs=res.data.filter(item=>item.recommendTitle.includes(keyWord))||[];
-               type?searchs=commoditySort(searchs,type):null;
-               searchs.length>0? res.send({code:0,success:"成功获取搜索数据",searchs}):  res.send({code:1,error:"抱歉,您搜索的商品未找到!"});
-       }else {
-        res.send({code:1,error:"抱歉,您搜索的商品未找到!"});
-    }
-});
-//public/cart 添加购物车    修改数量
-app.post("/public/cart",(req,res)=>{
-    if (!req.body) return res.sendStatus(400);
-    let {username,recommendID,count,selected}=req.body;
-    console.log(username, recommendID, count,"=======");
-    let info=res.data.find(item=>item.recommendID==recommendID); //商品
-    let newList;
-    read("./data/Content/userCommodity.json",userCommodities=>{//是一个回调函数，userCommodities是JSON.parse(data)
-        let oldCart=userCommodities.find(item=>item.username==username);
-        if(oldCart){
-            let oldInfo=oldCart.list.find(item=>item.recommendID==info.recommendID);
-            if(oldInfo){
-                oldInfo.count = count;
-                oldInfo.selected = selected;
-            }else {
-
-                info.count = count;
-                info.selected = selected;
-                oldCart.list.push(info);
-            }
-            newList = oldCart.list;
-        }else {
-            info.count = count;
-            info.selected = true;
-            let newCart={username,list:[info]};
-            userCommodities=[...userCommodities,newCart];
-            newList = newCart.list;
-        }
-        write("./data/Content/userCommodity.json",userCommodities,()=>{
-            res.json({code:0,success:"写入完成",data:newList})
-        })
-    });
-});
-
-//删除购物车
-//删除购物车 删除某一项 post请求，需要传的参数：username,recommendID
-//先通过username找到这条数据
-//找到返回true 过滤这条数据的list：[{id},{id}]，根据ID删除这一项(对象)，返回删除后的新数组
-//遍历数据库中的数据，通过username找到那一项数据，把它替换成删除后的那一项 ，写入数据库。
-app.post("/removeCart",(req,res)=>{
-    if (!req.body) return res.sendStatus(400);
-    let {username,recommendID}=req.body;
-    read("./data/Content/userCommodity.json",userCommodities=>{
-        let userCommoditie=userCommodities.find(item=>item.username==username);//先通过userName找到这条数据
-        if(userCommoditie){//找到返回true 过滤这条数据的list：[{id},{id}]，根据ID删除这一项(对象)，返回删除后的新数组
-            userCommoditie.list=userCommoditie.list.filter(key=>key.recommendID!=recommendID);
-            //遍历数据库中的数据，通过userName找到那一项数据，把它替换成删除后的那一项
-            userCommodities.map(item=>item.username==username?userCommoditie:item)
-            write("./data/Content/userCommodity.json",userCommodities,()=>{
-                console.log(userCommoditie.list);
-                res.send({code:0,success:"删除成功",shopData:userCommoditie.list})
-            })
-        }else {
-            res.send({code:1,error:"没有找到该商品"})
-        }
-    })
-});
-
-//清空购物车
-app.get("/emptiedCart",(req,res)=>{
-    let username=req.query.username;
-    console.log(username);
-    if (!req.query.username) return res.sendStatus(400);
-    read("./data/Content/userCommodity.json",userCommodities=>{
-        userCommodities=userCommodities.filter(item=>item.username!=username)
-        write("./data/Content/userCommodity.json",userCommodities,()=>{
-            res.send({code:0,success:"成功清空购物车"})
-        })
-    })
-});
-
-//查看购物车返回购物车信息
-app.get("/findCart",(req,res)=>{
-    let username=req.query.username;
-    if (!req.query.username) return res.sendStatus(400);
-    read("./data/Content/userCommodity.json",userCommodities=>{
-       let userCommoditie=userCommodities.find(item=>item.username==username);
-        if(userCommoditie){
-           res.send({code:0,success:"查看购物车成功",userCommoditie})
-        }else {
-            res.send({code:1,error:"查看购物车失败"})
-
-        }
-    })
-});
-
-//搜索 search    传参 关键字 keyWords 排序
-app.get("/public/search",(req,res)=>{
-    let keyWord=req.query.keyWord||"";
-    console.log(keyWord);
-    let type=req.query.type;
-    keyWord&&read("./data/Content/historical.json",historical=>{
-        let flag =historical.some(item=>item===keyWord);
-        if(!flag){
-            historical=[...historical,keyWord];
-            console.log(historical);
-            write("./data/Content/historical.json",historical,()=>{
-                console.log("写入成功");
-            })
-        }
-    });
-    if(keyWord.length>0){
-        let searchs=res.data.filter(item=>item.recommendTitle.includes(keyWord))||[];
-        type&&searchs.length>0?searchs=commoditySort(searchs,type):null;
-       searchs.length>0? res.send({code:0,success:"成功获取搜索数据",searchs}):res.send({code:1,error:"抱歉,您搜索的商品未找到!"});
-    }else {
-        res.send({code:1,error:"抱歉,您搜索的商品未找到!"});
-    }
-});
-//热门搜索
-app.get("/hotSearch",(req,res)=>{
-    hotSearch.length>0?res.send({code:0,success:"成功获取列表页数据",hotSearch}): res.send({code:1,error:"获取数据失败"})
-});
-
-//获取历史纪录和清空历史记录
-app.get("/historical",(req,res)=>{
-    let type=req.query.type;
-    read("./data/Content/historical.json",historical=>{
-        if(type=="undefined"){
-            res.send({code:0,success:"成功获取历史记录",historical})
-        }else{
-            console.log("呵呵");
-            write("./data/Content/historical.json",[],()=>{
-                res.send({code:0,success:"清除历史记录成功"})
-            })
-        }
-    })
-});
-//注册  前后台成功
-app.post("/reg",(req,res)=>{
-    let user=req.body;
-    console.log(user,"====");
-    read("./data/Content/userInfo.json",userInfos=>{
-        let newUser=userInfos.find(item=>item.username==user.username);
+//注册：
+app.use(bodyParser.json());//app.use方法，第一个参数是路径，如果没有，默认就是/,一旦匹配上，就让bodyParser.json()执行；
+app.post('/reg',(req,res)=>{
+    let {username,password}=req.body;
+    read('./data/personal/personal.json',data=>{
+        let newUser=data.find(item=>item.username===username);//这里使用用户名，因为如果此项存在，那么密码是加密过的密码，不能使用
         if(newUser){
-            res.send({code:1,error:"用户名已经存在请重新输入"})
-        }else {
-            user.password=crpyto.createHash("md5").update(user.password).digest("hex");
-            console.log("=====aaaaa");
-            userInfos.push(user);
-            write("./data/Content/userInfo.json",userInfos,()=>{
-                res.send({code:0,success:"注册成功"})
-            })
+            res.json({code:1,error:'用户名已经存在'});
+        }else{
+            password=crypto.createHash('md5').update(password).digest('hex');
+            data.push({username,password});
+            let write=(url,data,cb)=>{
+                fs.writeFile(url,JSON.stringify(data),cb);
+            };
+            write('./data/personal/personal.json',data,()=>{
+                res.json({code:0,success:'注册成功'});
+            });
         }
     })
 });
-//登录  前后台成功
+//登录：
 app.post("/login",(req,res)=>{
     let user=req.body;
-    user.password=crpyto.createHash("md5").update(user.password).digest("hex");
-    read("./data/Content/userInfo.json",userInfos=>{
-
-        let newUser=userInfos.find(item=>item.username==user.username);
+    let {username,password}=user;
+    password=crypto.createHash("md5").update(password).digest("hex");
+    read("./data/personal/personal.json",userInfos=>{
+        let newUser=userInfos.find(item=>item.username===user.username);
         if(newUser){
-            if(newUser.password==user.password){
+            if(newUser.password===password){
                 req.session.user=newUser;
-                res.send({code:0,error:"登录成功",user});
-            }else if(newUser.password!==user.password) {
-                res.send({code:1,error:"密码错误"})
+                res.send({code:0,success:"登录成功",user});
+            }else if(newUser.password!==password) {
+                res.send({code:1,error:"密码错误"});
+
             }
         }else {
-            res.send({code:2,error:"用户不存在"})
+                res.send({code:2,error:"用户不存在,请先注册"})
         }
     })
 });
-//退出
-app.get("/logout",(req,res)=>{
-    req.session.user=null;
-    console.log("======");
-    res.send({code:0,success:"退出成功"})
-});
+//在个人中心页，需要先判断用户是否登录：
 //判断是否登录
+//登录时，req.session.user的挂载未实现
 app.get("/validate",(req,res)=>{
-    console.log(req.session.user);
+    console.log(req.session);
     if(req.session.user){
-        res.send({code:0,success:"用户已经登录",user:req.session.user})
-    } else {
-        res.send({code:1,error:"此用户未登录"})
+        console.log(req.session);
+        res.json({code:0,success:"用户已登录",user:req.session.user})
+    }else{
+        res.json({code:1,error:"此用户未登录"})
     }
 });
-//修改密码
-app.post("/changepassword",(req,res)=>{
-    let {user,newpassword}=req.body;
-    console.log(user, newpassword);
-    read("./data/Content/userInfo.json",userInfos=>{
-        let newUser=userInfos.find(item=>item.username==user.username);// 找到用户
-        user.password=crpyto.createHash("md5").update(user.password).digest("hex");
-        if(newUser.password==user.password){  //判断密码 是否一样
-            newUser.password=crpyto.createHash("md5").update(newpassword).digest("hex");
-            userInfos.map(item=>{
-                return  item.username==newUser.username?newUser:item;
+
+//更改密码：
+app.post('/changePassword',(req,res)=>{
+    let {username,password,newPasswordFirst}=req.body;
+    password=crypto.createHash('md5').update(password).digest('hex');
+   read('./data/personal/personal.json',data=>{
+       let newUser=data.find(item=>item.username===username);
+       if(newUser&&newUser.password===password){
+          let  newPassword=crypto.createHash('md5').update(newPasswordFirst).digest('hex');
+          let newData= data.map(item=>{
+               if(item.username===username){
+                   return {username,password:newPasswordFirst}
+               }else{
+                   return item;
+               }
+           });
+           write('./data/personal/personal.json',newData,()=>{
+               res.json({code:0,success:'修改密码成功',username,password:newPasswordFirst});
+           });
+       }else{
+           res.json({code:1,error:'原始密码错误'})
+       }
+   });
+});
+//退出登录：
+app.use('/loginOut',(req,res)=>{
+    req.session.user=null;
+    res.json({code:0,success:'退出登录成功'})
+});
+//注销：
+app.post('/writeOff',(req,res)=>{
+    let {username,password}=req.body;
+    console.log(username, password);
+    read('./data/personal/personal.json',data=>{
+        let newUser=data.find(item=>item.username===username);
+        data=data.filter(item=>{
+            return item.username!==username;
+        });
+        write('./data/personal/personal.json',data,()=>{
+            res.json({code:0,success:'注销成功'});
+        });
+    })
+});
+//用户点击‘加入购物车’,将前端传过来的信息obj,加入到后台购物车文件中：
+//obj为：{
+//             flag:true,
+//             goodsNum:goodsNum,
+//              num:this.props.num,
+//             username:username || '',
+//             selected:true,
+//              recommendID,
+//         }
+app.post('/addCart',(req,res)=>{//注意goodsNum是总数量
+    let newLists;
+   if(!req.body){
+       return res.sendStatus(400);
+   }else{
+       let {username,goodsNum,selected,recommendID,num}=req.body;
+       let product=homeList.find(item=>item.recommendID===recommendID);//在商品数据中找到该商品
+       read('./data/cart/cart.json',(data)=>{
+           let oldCart=data.find(item=>item.username===username);
+           if(oldCart){//表明用户之前,已经添加过商品到购物车了
+               //找到购物车数据中，此用户的数据的和recommendID相同的那一项：
+               let oldInfo=oldCart.lists.find(item=>item.recommendID===recommendID);
+               if(oldInfo){//表明用户已经在购物车添加过当前详情页的这项了，给这项改goodsNum,selected:true
+                   oldInfo.num=oldInfo.num+num;
+                   oldInfo.selected=selected;
+               }else{//用户之前没添加过这项，需写入此项
+                   product.num=num;
+                   product.selected=selected;
+                   oldCart.lists.push(product);
+               }
+               newLists=oldCart.lists;
+           }else{//说明之前没有添加过购物车
+               product.num=num;
+               product.selected=selected;
+               let newCart={username,lists:[product]};
+               console.log(newCart);
+               data=[...data,newCart];
+               //[ { username: 'aaaaaa', lists: [ [Object] ] } ]
+               newLists=newCart.lists;
+           };
+           console.log(data);
+           write('./data/cart/cart.json',data,()=>{
+               res.json({code:0,success:'添加到购物车成功',lists:newLists});//数据需要返回吗，是不是可以不用返回；
+           })
+       });
+   }
+});
+//详情页刚加载，就去查看购物车信息：
+app.get('/findCart',(req,res)=>{
+    let {username}=req.query;
+    if(username){
+        read('./data/cart/cart.json',data=>{
+            let info=data.find(item=>item.username===username);
+            if(info){//说明用户之前登录后，有加入商品
+                let lists=info.lists;
+                res.json({code:0,success:'此用户有添加过商品',lists})
+            }else{//说明用户之前登录后，没有添加商品
+                res.json({code:1,success:'此用户没添加过商品'})
+            }
+        })
+    }
+});
+//用户注销时，去清空此用户的购物车：
+app.get('/writeOffCart',(req,res)=>{
+   let {username}=req.query;
+    read('./data/cart/cart.json',data=>{
+        let info=data.find(item=>item.username===username);
+        if(info){
+            data=data.filter(item=>{
+                return item.username!==username;
             });
-            write("./data/Content/userInfo.json",userInfos,()=>{
-                res.send({code:0,success:"修改密码成功"});
-            });
+            write('./data/cart/cart.json',data,()=>{
+                res.json({code:0,success:'注销清空用户购物车成功'})
+            })
         }else{
-            res.send({code:1,error:"密码错误"});
+            res.json({code:1,error:'此用户没加入商品到购物车，不需要清空'})
+        }
+    });
+});
+//用户点击收藏时,收藏这一项：
+app.post('/addCollect',(req,res)=>{
+    if(!req.body)return res.sendStatus(400);
+    let {username,recommendID,collect}=req.body;
+    let product=homeList.find(item=>item.recommendID===recommendID);
+    read('./data/collect/collect.json',data=>{
+        let lists;
+        let oldCollect=data.find(item=>item.username===username);
+        if(oldCollect){//有此用户名
+            let info=oldCollect.lists.find(item=>item.recommendID===recommendID);
+            if(info) { //已经收藏了
+
+            }else{//还没有收藏
+                product.collect=true;
+                 oldCollect.lists.push(product);
+            }
+             lists=oldCollect.lists;
+        }else{//用户还没有加过收藏,需将用户和商品加入收藏信息
+            product.collect=true;
+            let newInfo={username,lists:[product]};
+            data.push(newInfo);
+             lists=[product];
+        }
+        write('./data/collect/collect.json',data,()=>{
+            res.json({code:0,success:'写入收藏成功',lists:lists})
+        })
+    })
+});
+//页面首次加载，去获取收藏信息：
+app.get('/findCollect',(req,res)=>{
+    let {username}=req.query;
+    read('./data/collect/collect.json',data=>{
+        let info=data.find(item=>item.username===username);
+        if(info){
+            let lists =info.lists;
+            console.log(lists);
+            res.json({code:0,success:'获取收藏信息成功',lists});
+        }else{
+            res.json({code:1,error:'用户还没有收藏信息'})
+        }
+    });
+});
+//收藏页面
+app.get('/collect',(req,res)=>{
+    let {username}=req.query;
+    read('./data/collect/collect.json',data=>{
+        let info=data.find(item=>item.username===username);
+        if(info){
+            let lists=info.lists;
+            res.json({code:0,success:'获取收藏信息成功',lists})
+        }else{
+            res.json({code:1,error:'您还没有收藏信息'})
         }
     })
 });
 
-//公共
-app.all("*",(req,res)=>{res.end("not find")});
+//取消收藏
+app.get('/cancelCollect',(req,res)=>{
+    let {username,recommendID}=req.query;
+    read('./data/collect/collect.json',data=>{
+        let info=data.find(item=>item.username===username);
+        if(info){
+            info.lists=info.lists.filter(item=>item.recommendID!==recommendID);
+            data=data.map(item=>item.username===username?info:item);
+            write('./data/collect/collect.json',data,()=>{
+                res.json({code:0,success:'取消收藏成功'});
+                console.log(data);
+            })
+        }
+    })
+});
+
+//更新购物车数量
+app.post('/updateCart',(req,res)=>{//注意goodsNum是总数量
+    console.log(req.body);
+    let newLists;
+    if(!req.body){
+        return res.sendStatus(400);
+    }else{
+        let {username,selected,recommendID,num}=req.body;
+        let product=homeList.find(item=>item.recommendID===recommendID);//在商品数据中找到该商品
+        read('./data/cart/cart.json',(data)=>{
+            let oldCart=data.find(item=>item.username===username);
+            if(oldCart){
+                //表明用户之前,已经添加过商品到购物车了
+                //找到购物车数据中，此用户的数据的和recommendID相同的那一项：
+                let oldInfo=oldCart.lists.find(item=>item.recommendID===recommendID);
+                if(oldInfo){//表明用户已经在购物车添加过当前详情页的这项了，给这项改goodsNum,selected:true
+                    oldInfo.num=num;
+                    oldInfo.selected=selected;
+                }else{//用户之前没添加过这项，需写入此项
+                   // product.num=num;
+                  //  product.selected=selected;
+                  //  oldCart.lists.push(product);
+                }
+                newLists=oldCart.lists;
+            }else{//说明之前没有添加过购物车
+
+            };
+            console.log(data);
+            write('./data/cart/cart.json',data,()=>{
+                res.json({code:0,success:'添加到购物车成功',lists:newLists});//数据需要返回吗，是不是可以不用返回；
+            })
+        });
+    }
+});
+//删除购物车某一商品：
+app.post('/deleteCartInfo',(req,res)=>{
+    if(!req.body) return res.sendStatus(400);
+    let {username,recommendID}=req.body;
+    read('./data/cart/cart.json',data=>{
+       let info= data.find(item=>item.username===username);
+       if(info) {
+           info.lists = info.lists.filter(item => item.recommendID !== recommendID);
+           data=data.map(item=>(item.username===username?info:item));
+           write('./data/cart/cart.json',data,()=>{
+               res.json({code:0,success:'删除此条购物车信息成功',lists:info.lists})
+           })
+       }
+    })
+});
+//全部清空
+app.get('/deleteCartInfo',(req,res)=>{
+    let {username}=req.query;
+    read('./data/cart/cart.json',data=>{
+        let info=data.find(item=>item.username===username);
+        data=data.map(item=>(item.username!==username?item:{...info,lists:[]}));
+        write('./data/cart/cart.json',data,()=>{
+            res.json({code:0,success:'清空全部购物车成功',lists:[]});
+        });
+    });
+});
 app.listen(post,()=>console.log(`端口${post}监听成功`));
+
+
+

@@ -1,37 +1,53 @@
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
 import './index.less';
-import {Link} from 'react-router-dom';
-import Alert from '../../components/Alert';
-import actions from '../../store/actions/personal';
+import {Link,withRouter} from 'react-router-dom';
+import actions from '../../redux/actions/personal';
+import {connect} from 'react-redux';
+
 class Login extends Component {
-    handleClick = () => {
-        let username = this.username.value;
-        let password = this.password.value;
-        this.props.login({username, password});
+
+    componentWillUnmount() {
+        this.username.value='';
+        this.password.value='';
+        this.props.clearErrorAPI();
+    }
+
+    handleClick=()=>{
+        let username=this.username.value;
+        let password=this.password.value;
+        this.props.loginAPI({
+            username,
+            password
+        });
     };
     render() {
         return (
             <div className="log">
                 <div className="log-header">
-                    <i onClick={() => this.props.history.goBack()}>&lt;</i>
+                    <i onClick={()=>this.props.history.goBack()}>&lt;</i>
                     顺丰优选登录
                 </div>
-                <input ref={input => this.username = input} type="text" placeholder="请输入手机号/邮箱/用户名" className="input"/>
-                <input ref={input => this.password = input} type="password" placeholder="请输入密码" className="input"/>
+                <input  type="text" placeholder="请输入用户名(大小写字母开头，任意5-8位)" className="input"
+                        ref={ref=>this.username=ref}
+                />
+                <input  type="password" placeholder="请输入密码(任意6-8位大小写字母，数字，_)" className="input"
+                        ref={ref=>this.password=ref}
+                />
                 <div
+                    className="log-btn"
                     onClick={this.handleClick}
-                    className="log-btn">登&nbsp;录
+                >
+                    登&nbsp;录
                 </div>
                 <div className="quick-log">
                     <Link to="/reg">快速注册</Link>
                 </div>
-                <Alert></Alert>
+                {this.props.errorLogin?<div className="login-warn">{this.props.errorLogin}</div>:null}
             </div>
         )
     }
 }
-export default connect(
-    state => state.personal,
+export default withRouter(connect(
+    state=>({...state.personal}),
     actions
-)(Login)
+)(Login));

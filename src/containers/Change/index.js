@@ -1,27 +1,28 @@
 import React, {Component} from 'react';
 import './index.less';
 import {connect} from 'react-redux';
-import actions from '../../store/actions/personal';
+import {withRouter} from "react-router-dom";
+import actions from '../../redux/actions/personal';
 
-import Alert from '../../components/Alert';
+
 class Change extends Component {
-    constructor() {
-        super();
-        this.state = {msg: ''};
-    }
-
-    handleChange = () => {
-        let password = this.password.value;
-        let newpassword = this.newpassword.value;
-        let newpasswordFirst = this.newpasswordFirst.value;
-        let pdtest = /^(\w){6,8}$/;
-        if (newpassword===newpasswordFirst) {
-            if (pdtest.test(newpassword)){
-                let user={username:this.props.username,password}
-                this.props.changepassword({user,newpassword});
+    componentWillUnmount() {
+       this.password.value='';
+       this.newPasswordFirst.value='';
+       this.newPasswordSecond.value='';
+    };
+    handleClick=()=>{
+        let password=this.password.value;
+        let newPasswordFirst=this.newPasswordFirst.value;
+        let newPasswordSecond=this.newPasswordSecond.value;
+        let pastest=/^\w{6,8}$/;
+        let username=this.props.username;
+        if(newPasswordFirst===newPasswordSecond){
+            if(pastest.test(password)&&pastest.test(newPasswordFirst)){
+                this.props.changPasswordAPI({username,password,newPasswordFirst});
             }
         }else{
-            this.setState({msg:'两次输入的新密码不一致'});
+            this.props.twoNewPasswordsError();
         }
     };
     render() {
@@ -29,20 +30,25 @@ class Change extends Component {
         return (
             <div className="reg">
                 <div className="reg-header">
-                    <i onClick={() => this.props.history.goBack()}>&lt;</i>
+                    <i onClick={()=>this.props.history.goBack(-1)}>&lt;</i>
                     修改密码
                 </div>
-                <input ref={input => this.password = input} type="text" placeholder="请输入原始密码" className="input"/>
-                <input ref={input => this.newpassword = input} type="text" placeholder="请输入新密码" className="input"/>
-                <input ref={input => this.newpasswordFirst = input} type="text" placeholder="请再次输入密码" className="input"/>
-                <div className="reg-btn" onClick={this.handleChange}>确认修改</div>
-                <div className="reg-warn">{this.state.msg}</div>
-                <Alert></Alert>
+                <input ref={input => this.password = input} type="password" placeholder="请输入原始密码" className="input"/>
+                <input ref={input => this.newPasswordFirst= input} type="password" placeholder="请输入新密码" className="input"/>
+                <input ref={input => this.newPasswordSecond = input} type="password" placeholder="请再次输入密码" className="input"/>
+                <div className="reg-btn" onClick={this.handleClick}>确认修改</div>
+                {
+                    this.props.msg? <div className="reg-warn">{this.props.msg}</div>:null
+                }
+                {
+                    this.props.error? <div className="reg-warn">{this.props.error}</div>:null
+                }
+
             </div>
         )
     }
 }
-export default connect(
+export default withRouter(connect(
     state => state.personal,
     actions
-)(Change)
+)(Change))
