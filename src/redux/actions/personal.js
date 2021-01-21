@@ -1,6 +1,7 @@
 import * as types from '../action-types';
 import {reg,login,validate,changPassword,loginOut,writeOff} from '../../api/personal';
 import {push} from 'react-router-redux';
+
 const actions={
     //注册：
     regAPI({username,password}){

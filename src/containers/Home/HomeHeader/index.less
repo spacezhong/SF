@@ -1,59 +1,63 @@
-.home-header{
-  display: flex;
-  align-items: center;
+.home-header-box{
   background-color: greenyellow;
-  height: 1rem;
-  //padding: 0 .3rem .02rem .1rem;
-  //overflow: hidden;
-  margin-bottom: .1rem;
   width: 100%;
   position: fixed;
   top:0;
+  right:0;
   left:0;
   z-index: 999;
-  .home-city{
-    margin-right: .4rem;
-    position: absolute;
-    left:.2rem;
-    bottom:.06rem;
-  }
-  .city-name{
-    vertical-align: center;
-    font-size: .32rem;
-  }
-  .address{
-    vertical-align: center;
-    color:white;
-    font-size:.4rem;
-  }
-  input{
-    position: absolute;
-    left: 1.5rem;
-    top: .2rem;
-    width: 5rem;
-    height: 0.6rem;
-    line-height: 0.6rem;
-    border-radius: .3rem;
-    background-color: whitesmoke;
-    text-align: left;
-    color: black;
-    font-size: .25rem;
-    opacity: .9;
-    border: none;
-  }
-  .home-personal{
-    position: relative;
-    .right{
+  .home-header{
+    margin: 0 auto;
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 1rem;
+    .home-city{
+     // margin-right: .4rem;
       position: absolute;
-      left: 6.7rem;
-      top: -.2rem;
-      font-size: .5rem;
-      color:black;
-      opacity: .5;
+      left:.2rem;
+      bottom:.06rem;
     }
-  }
-  a{
-    color:#000;
-    text-decoration: none;
+    .city-name{
+      vertical-align: center;
+      font-size: .32rem;
+    }
+    .address{
+      vertical-align: center;
+      color:white;
+      font-size:.4rem;
+    }
+    input{
+      position: absolute;
+      left: 1.5rem;
+      top: .2rem;
+      width: 5rem;
+      height: 0.6rem;
+      line-height: 0.6rem;
+      border-radius: .3rem;
+      background-color: whitesmoke;
+      text-align: left;
+      color: black;
+      font-size: .25rem;
+      opacity: .9;
+      border: none;
+    }
+    .home-personal{
+      position: relative;
+      display: block;
+      .right{
+        position: absolute;
+        left: 2.9rem;
+        top: -.2rem;
+        font-size: .5rem;
+        color:black;
+        opacity: .5;
+      }
+    }
+    a{
+      color:#000;
+      text-decoration: none;
+    }
   }
 }

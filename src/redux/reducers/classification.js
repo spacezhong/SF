@@ -58,6 +58,13 @@ const list=(state=initState.list,action)=>{
                 activeKey:action.activeKey,
                 closePanel:action.closePanel
             };
+        case types.RECOVER:
+            return {
+                ...state,
+                activeKey:action.activeKey,
+                closePanel:action.closePanel,
+                tabs:tabs,
+            };
         default:
             return state
     }

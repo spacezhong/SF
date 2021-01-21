@@ -37,8 +37,9 @@ const actions={
         return(dispatch,getState)=>{
             let lists=getState().cart.lists.map(item=>{
                 return(
-                    item.recommendID===id?{...item,selected:!item.selected}
-                    :item
+                    item.recommendID===id
+                        ? {...item,selected:!item.selected}
+                        :item
                 )
             });
             let flag=lists.every(item=>{

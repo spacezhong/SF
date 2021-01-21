@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{memo} from 'react';
 import './index.less';
 import img1 from './img/1.jpg';
 import {Link} from 'react-router-dom';
@@ -15,6 +15,28 @@ const dataSource={
         }
     ]
 };
+
+function Menu(){
+
+    return(
+        <div className="menu">
+            <div className="menu-top">
+                <div className="menu-line"></div>
+                <div className="menu-name">♦&nbsp;每日菜谱&nbsp;♦</div>
+                <div className="menu-line"></div>
+            </div>
+            <p className="menu-middle">跟私房大厨&nbsp;做舌尖盛宴</p>
+            <Link  to='/menuVideo' className="food">
+                <img src={dataSource.menuList[0].poster} alt="" className="food-img"/>
+                <div className="food-title">{dataSource.menuList[0].title}</div>
+                <div className="food-content-style">视&nbsp;频</div>
+            </Link>
+        </div>
+        )
+};
+export default memo(Menu);
+
+/*
 class Menu extends React.Component{
     render(){
         return(
@@ -35,3 +57,4 @@ class Menu extends React.Component{
     }
 }
 export default Menu;
+*/

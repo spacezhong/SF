@@ -4,6 +4,11 @@ import Cart from "./containers/Cart";
 //<Link className="iconfont icon-cart detailCarBar-pic"
 //      to={{pathname:`/cart`,state:username}}
 //>
+
+/*<ProtectRouter path='/cart' component={Cart}/>
+ <Route path='/cart' render={}/>
+*/
+
 export default  function({component:Component,...rest}){
     return (
         <Route {...rest}

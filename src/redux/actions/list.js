@@ -44,7 +44,17 @@ const actions={
                 closePanel:true,//主要是为了关上面板
             })
         }
-    }
+    },
+    recoverAPI(){
+        return (dispatch,getState)=>{
+            dispatch({
+                type:types.RECOVER,
+                activeKey:'',
+                closePanel:true,
+            });
+
+        }
+    },
 
 
 };

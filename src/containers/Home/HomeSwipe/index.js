@@ -1,8 +1,37 @@
-import React from 'react';
+import React,{memo} from 'react';
 import Slider from "react-slick";
 import './index.less';
 
-class HomeSwipe extends React.Component{
+function HomeSwipe(props){
+    let settings = {
+        dots: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        autoplay:true,
+    };
+    let {dataSource}=props;
+    return(
+        <div className="homeSwipe">
+            <div className="homeSwipe-content">
+                <Slider {...settings}>
+                    {
+                        dataSource.map((item,index)=>{
+                            return(
+                                <div className="homeSwipe-item" key={index}>
+                                    <img src={item} alt="" className="homeSwipe-item-img"/>
+                                </div>
+                            )
+                        })
+                    }
+                </Slider>
+            </div>
+        </div>
+        )
+};
+export default memo(HomeSwipe);
+
+/*class HomeSwipe extends React.Component{
 
     render() {
         let settings = {
@@ -13,7 +42,7 @@ class HomeSwipe extends React.Component{
             autoplay:true,
         };
         let {dataSource}=this.props;
-        console.log(dataSource);
+
         return (
             <div className="homeSwipe">
                 <div className="homeSwipe-content">
@@ -33,4 +62,4 @@ class HomeSwipe extends React.Component{
         )
     }
 }
-export default HomeSwipe;
+export default HomeSwipe;*/

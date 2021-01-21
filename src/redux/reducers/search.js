@@ -24,7 +24,6 @@ const initState={
         tabs:tabs,
         activeKey:'',
         closePanel:true,
-
     },
     searchHot:{
         data:{},
@@ -67,6 +66,13 @@ const search=(state=initState.search,action)=>{
             };
         case types.CHANGE_FILTER_TYPE:
             return changeFilter(state,action);
+        case types.SEARCH_RECOVER:
+            return  {
+                ...state,
+                activeKey:action.activeKey,
+                closePanel:action.closePanel,
+                tabs:tabs,
+            };
         default:
             return state
     }

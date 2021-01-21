@@ -1,9 +1,8 @@
-import React, {Component} from 'react';
+import React, {memo,Component} from 'react';
 import './index.less';
-import {connect} from 'react-redux';
+import {connect,useSelector,shallowEqual,useDispatch} from 'react-redux';
 import {withRouter} from "react-router-dom";
-import actions from '../../redux/actions/personal';
-
+import actions,{changPasswordAPI,twoNewPasswordsError} from '../../redux/actions/personal';
 
 class Change extends Component {
     componentWillUnmount() {
@@ -26,7 +25,6 @@ class Change extends Component {
         }
     };
     render() {
-        console.log(this.props);
         return (
             <div className="reg">
                 <div className="reg-header">
@@ -43,7 +41,6 @@ class Change extends Component {
                 {
                     this.props.error? <div className="reg-warn">{this.props.error}</div>:null
                 }
-
             </div>
         )
     }
@@ -51,4 +48,50 @@ class Change extends Component {
 export default withRouter(connect(
     state => state.personal,
     actions
-)(Change))
+)(Change));
+
+/*function Change(props){
+    const passwordInput=React.useRef();
+    const newPasswordFirstInput=React.useRef();
+    const newPasswordSecondInput=React.useRef();
+    const {msg,error,username}=useSelector(state=>({
+        ...state.personal
+    }),shallowEqual);
+    const dispatch=useDispatch();
+
+    const handleClick=()=>{
+        let password=passwordInput.current.value;
+        let newPasswordFirst=newPasswordFirstInput.current.value;
+        let newPasswordSecond=newPasswordSecondInput.current.value;
+        let pastest=/^\w{6,8}$/;
+        if(newPasswordFirst===newPasswordSecond){
+            if(pastest.test(password)&&pastest.test(newPasswordFirst)){
+                dispatch(changPasswordAPI({username,password,newPasswordFirst}));
+                password='';
+                newPasswordFirst='';
+                newPasswordSecond='';
+            };
+        }else{
+            dispatch(twoNewPasswordsError());
+        };
+    };
+    return(
+        <div className="reg">
+            <div className="reg-header">
+                <i onClick={()=>props.history.goBack(-1)}>&lt;</i>
+                修改密码
+            </div>
+            <input ref={passwordInput} type="password" placeholder="请输入原始密码" className="input"/>
+            <input ref={newPasswordFirstInput} type="password" placeholder="请输入新密码" className="input"/>
+            <input ref={newPasswordSecondInput} type="password" placeholder="请再次输入密码" className="input"/>
+            <div className="reg-btn" onClick={handleClick}>确认修改</div>
+            {
+                msg? <div className="reg-warn">{msg}</div>:null
+            }
+            {
+                error? <div className="reg-warn">{error}</div>:null
+            }
+        </div>
+        )
+};
+export default memo(withRouter(Change));*/

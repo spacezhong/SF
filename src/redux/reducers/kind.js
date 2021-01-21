@@ -5,7 +5,8 @@ const initState={
     kindList:{
         data:{},
         currentLeftIndex:0,
-    }
+    },
+
 
 
 };

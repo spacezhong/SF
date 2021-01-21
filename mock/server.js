@@ -11,7 +11,7 @@ let homeHeadline=require('./data/home/headline');
 let homeDiscount=require('./data/home/discounts');
 let homeList=require('./data/home/lists');
 let kind=require('./data/kind/kind');
-let searchHot=require('./data/search/searchHot');
+let searchHotData=require('./data/search/searchHot');
 let filterData=require('./data/filter/filter');
 
 app.use(session({
@@ -125,8 +125,8 @@ app.get('/search',(req,res)=>{
      });
  });
 app.get('/hotSearch',(req,res)=>{
-    searchHot.length?
-            res.json({code:0,success:'获取数据成功',searchHot})
+    searchHotData.length?
+            res.json({code:0,success:'获取数据成功',searchHotData})
             :res.json({code:1,err:'获取数据失败'})
 });
 app.get('/searchHistory',(req,res)=>{
@@ -165,7 +165,6 @@ app.get('/detail/:id',(req,res)=>{
     detailList.length?res.json({code:0,success:'获取数据成功',detailList})
         :res.json({code:1,err:'获取数据失败'})
 });
-
 //注册：
 app.use(bodyParser.json());//app.use方法，第一个参数是路径，如果没有，默认就是/,一旦匹配上，就让bodyParser.json()执行；
 app.post('/reg',(req,res)=>{
@@ -196,6 +195,7 @@ app.post("/login",(req,res)=>{
         if(newUser){
             if(newUser.password===password){
                 req.session.user=newUser;
+                console.log(req.session);
                 res.send({code:0,success:"登录成功",user});
             }else if(newUser.password!==password) {
                 res.send({code:1,error:"密码错误"});
@@ -210,7 +210,7 @@ app.post("/login",(req,res)=>{
 //判断是否登录
 //登录时，req.session.user的挂载未实现
 app.get("/validate",(req,res)=>{
-    console.log(req.session);
+    console.log(req.session.user);
     if(req.session.user){
         console.log(req.session);
         res.json({code:0,success:"用户已登录",user:req.session.user})
@@ -276,6 +276,7 @@ app.post('/addCart',(req,res)=>{//注意goodsNum是总数量
        return res.sendStatus(400);
    }else{
        let {username,goodsNum,selected,recommendID,num}=req.body;
+       console.log(username);
        let product=homeList.find(item=>item.recommendID===recommendID);//在商品数据中找到该商品
        read('./data/cart/cart.json',(data)=>{
            let oldCart=data.find(item=>item.username===username);
