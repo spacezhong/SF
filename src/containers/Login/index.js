@@ -25,7 +25,7 @@ class Login extends Component {
             <div className="log">
                 <div className="log-header">
                     <i onClick={()=>this.props.history.goBack()}>&lt;</i>
-                    顺丰优选登录
+                    生鲜优选登录
                 </div>
                 <input  type="text" placeholder="请输入用户名(大小写字母开头，任意5-8位)" className="input"
                         ref={ref=>this.username=ref}

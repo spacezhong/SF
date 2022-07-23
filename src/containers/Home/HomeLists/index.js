@@ -9,7 +9,6 @@ function HomeLists(props) {
     const myRef = React.useRef();
     const {list} = useSelector(state => ({
         ...state.home,
-
     }), shallowEqual);
     let lists = list.data ? list.data : {};
     let dataSource = lists.listData ? lists.listData : [];

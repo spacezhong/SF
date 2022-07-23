@@ -27,8 +27,10 @@ class Detail extends React.Component{
         return(
             <div className="detail">
                 <HeaderBar title='商品' />
-                <DetailProduct dataSource={data}/>
-                <DetailCount num={num} changeNum={changeNum}/>
+                <div className="detail-container-content">
+                    <DetailProduct dataSource={data}/>
+                    <DetailCount num={num} changeNum={changeNum}/>
+                </div>
                 <DetailCarBar  id={id} img={img} num={num} addCartAPI={addCartAPI} goodsNum={goodsNum} flag={flag}/>
             </div>
         )

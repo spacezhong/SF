@@ -4,7 +4,7 @@ let post=9000;//端口号
 let fs=require('fs');
 let crypto=require('crypto');//此中间件用于加密
 let bodyParser=require('body-parser');//此中间件用于解析请求体
-let session=require('express-session');
+let session=require('express-session');//session
 let homeSwipe=require('./data/home/swipe');
 let homeCategory=require('./data/home/category');
 let homeHeadline=require('./data/home/headline');
@@ -19,10 +19,11 @@ app.use(session({
     saveUninitialized:true,//初始化session时，是否保存到存储；
     secret:"six",//表示服务器端生成的session签名；
 }));
+
 //跨域响应头
 app.use((req,res,next)=>{
     //服务器允许访问的网
-    res.header("Access-Control-Allow-Origin","http://localhost:8080");
+    res.header("Access-Control-Allow-Origin","http://localhost:8081");
     //服务器允许客户发送的请求方式
     res.header("Access-Control-Allow-Methods","GET,POST,DELETE,PUT");
     //服务器允许的请求头
@@ -129,6 +130,8 @@ app.get('/hotSearch',(req,res)=>{
             res.json({code:0,success:'获取数据成功',searchHotData})
             :res.json({code:1,err:'获取数据失败'})
 });
+
+
 app.get('/searchHistory',(req,res)=>{
      let type=req.query.type;
      let cb=(data)=>{

@@ -34,7 +34,7 @@ class Reg extends Component{
               注册遇到问题?
               <Link to="">联系客服</Link> <br/>
               <div className="reg-mes">
-                  注册即视为同意<span>顺丰优选注册协议</span>
+                  注册即视为同意<span>生鲜优选注册协议</span>
               </div>
           </div>
       </div>
